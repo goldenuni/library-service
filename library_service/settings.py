@@ -134,5 +134,5 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=3),
     "ROTATE_REFRESH_TOKENS": True,
 
-    "AUTH_HEADER_NAME": "Authorize",
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZE",
 }
