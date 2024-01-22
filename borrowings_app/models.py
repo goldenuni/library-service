@@ -34,12 +34,23 @@ class Borrowing(models.Model):
                 if actual_return_date:
                     if actual_return_date < borrow_date:
                         raise error_to_raise(
-                            "Actual return date must be greater or equal to borrow_date"
+                            {
+                                "Actual return date ERROR": "Actual return date must be greater or equal to borrow_date",
+                            }
                         )
+
             else:
-                raise error_to_raise("Expected return date must be greater or equal to borrow_date")
+                raise error_to_raise(
+                    {
+                        "Expected return date ERROR": "Expected return date must be greater or equal to borrow_date"
+                    }
+                )
         else:
-            raise error_to_raise("Book inventory is 0, you cannot take this book")
+            raise error_to_raise(
+                {
+                    "Book inventory ERROR": "Book inventory is 0, you cannot take this book"
+                }
+            )
 
     def clean(self):
         Borrowing.validate_borrowing(
