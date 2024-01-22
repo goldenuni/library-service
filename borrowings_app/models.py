@@ -29,7 +29,7 @@ class Borrowing(models.Model):
         error_to_raise: Exception,
         actual_return_date: date = None,
     ):
-        if book.inventory != 0:
+        if book.inventory > 0:
             if borrow_date <= expected_return_date:
                 if actual_return_date:
                     if actual_return_date < borrow_date:
