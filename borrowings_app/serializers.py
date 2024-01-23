@@ -41,3 +41,20 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Borrowing
         fields = "__all__"
+
+
+class BorrowingReturnSerializer(serializers.ModelSerializer):
+    book = BookSerializer()
+
+    def save(self):
+        instance = super().update(self.instance, self.validated_data)
+
+        book = instance.book
+        book.inventory += 1
+        book.save()
+
+        return instance
+
+    class Meta:
+        model = Borrowing
+        fields = "__all__"
