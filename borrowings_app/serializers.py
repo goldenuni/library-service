@@ -20,6 +20,7 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
             expected_return_date=data.get("expected_return_date"),
             book=data.get("book"),
             error_to_raise=serializers.ValidationError,
+            is_active=data.get("is_active"),
             actual_return_date=data.get("actual_return_date"),
         )
         return data
