@@ -15,10 +15,12 @@ class Borrowing(models.Model):
     )
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return (
-            f"{self.user.first_name} {self.user.last_name} borrowed {self.book.title}"
+            f"{self.user.first_name} {self.user.last_name} "
+            f"borrowed {self.book.title}"
         )
 
     @staticmethod
@@ -27,28 +29,41 @@ class Borrowing(models.Model):
         expected_return_date: date,
         book: Book,
         error_to_raise: Exception,
+        is_active: bool = True,
         actual_return_date: date = None,
     ):
         if book.inventory > 0:
             if borrow_date <= expected_return_date:
-                if actual_return_date:
+                if actual_return_date and not is_active:
                     if actual_return_date < borrow_date:
                         raise error_to_raise(
                             {
-                                "Actual return date ERROR": "Actual return date must be greater or equal to borrow_date",
+                                "Actual return date ERROR":
+                                    "Actual return date must be "
+                                    "greater or equal to borrow_date",
                             }
                         )
-
+                else:
+                    raise error_to_raise(
+                        {
+                            "Is active ERROR": "If status is_active is True, "
+                                               "therefore actual_return_date "
+                                               "must be None or vice verse",
+                        }
+                    )
             else:
                 raise error_to_raise(
                     {
-                        "Expected return date ERROR": "Expected return date must be greater or equal to borrow_date"
+                        "Expected return date ERROR":
+                            "Expected return date must be "
+                            "greater or equal to borrow_date"
                     }
                 )
         else:
             raise error_to_raise(
                 {
-                    "Book inventory ERROR": "Book inventory is 0, you cannot take this book"
+                    "Book inventory ERROR":
+                        "Book inventory is 0, you cannot take this book"
                 }
             )
 
@@ -58,5 +73,6 @@ class Borrowing(models.Model):
             self.expected_return_date,
             self.book,
             ValidationError,
+            self.is_active,
             self.actual_return_date,
         )
