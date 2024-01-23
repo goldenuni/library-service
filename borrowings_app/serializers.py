@@ -6,6 +6,7 @@ from borrowings_app.models import Borrowing
 
 class BorrowingReadSerializer(serializers.ModelSerializer):
     book = BookSerializer()
+    user = serializers.StringRelatedField(many=False)
 
     class Meta:
         model = Borrowing
@@ -45,6 +46,7 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
 
 class BorrowingReturnSerializer(serializers.ModelSerializer):
     book = BookSerializer()
+    user = serializers.StringRelatedField(many=False)
 
     def save(self):
         instance = super().update(self.instance, self.validated_data)
