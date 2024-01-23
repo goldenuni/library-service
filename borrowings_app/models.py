@@ -19,7 +19,8 @@ class Borrowing(models.Model):
 
     def __str__(self):
         return (
-            f"{self.user.first_name} {self.user.last_name} borrowed {self.book.title}"
+            f"{self.user.first_name} {self.user.last_name} "
+            f"borrowed {self.book.title}"
         )
 
     @staticmethod
@@ -37,26 +38,32 @@ class Borrowing(models.Model):
                     if actual_return_date < borrow_date:
                         raise error_to_raise(
                             {
-                                "Actual return date ERROR": "Actual return date must be greater or equal to borrow_date",
+                                "Actual return date ERROR":
+                                    "Actual return date must be "
+                                    "greater or equal to borrow_date",
                             }
                         )
                 else:
                     raise error_to_raise(
                         {
                             "Is active ERROR": "If status is_active is True, "
-                                               "therefore actual_return_date must be None or vice verse",
+                                               "therefore actual_return_date "
+                                               "must be None or vice verse",
                         }
                     )
             else:
                 raise error_to_raise(
                     {
-                        "Expected return date ERROR": "Expected return date must be greater or equal to borrow_date"
+                        "Expected return date ERROR":
+                            "Expected return date must be "
+                            "greater or equal to borrow_date"
                     }
                 )
         else:
             raise error_to_raise(
                 {
-                    "Book inventory ERROR": "Book inventory is 0, you cannot take this book"
+                    "Book inventory ERROR":
+                        "Book inventory is 0, you cannot take this book"
                 }
             )
 
