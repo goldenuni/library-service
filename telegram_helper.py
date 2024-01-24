@@ -1,3 +1,4 @@
+import asyncio
 from telegram import Bot
 
 
@@ -6,5 +7,5 @@ class TelegramHelper:
         self.bot = Bot(token)
         self.chat_id = chat_id
 
-    def send_message(self, text):
-        self.bot.send_message(chat_id=self.chat_id, text=text)
+    async def send_message(self, text):
+        await self.bot.send_message(chat_id=self.chat_id, text=text)

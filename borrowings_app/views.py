@@ -1,5 +1,6 @@
 import datetime
 
+from django.conf import settings
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
@@ -11,6 +12,8 @@ from borrowings_app.serializers import (
     BorrowingCreateSerializer,
     BorrowingReturnSerializer,
 )
+from borrowings_app.tasks import send_notification_task
+from telegram_helper import TelegramHelper
 
 
 class BorrowingListCreateView(generics.ListCreateAPIView):
@@ -44,6 +47,19 @@ class BorrowingListCreateView(generics.ListCreateAPIView):
             queryset = queryset.filter(is_active=False)
 
         return queryset
+
+    def perform_create(self, serializer):
+        borrowing = serializer.save()
+
+        telegram_helper = TelegramHelper(
+            token=settings.TELEGRAM_BOT_TOKEN, chat_id=settings.TELEGRAM_CHAT_ID
+        )
+        message = (
+            f"New Borrowing Created:\n"
+            f"User: {borrowing.user.username}\n"
+            f"Book: {borrowing.book.title}"
+        )
+        telegram_helper.send_message(message)
 
 
 class BorrowingDetailView(generics.RetrieveAPIView):
