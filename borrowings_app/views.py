@@ -1,5 +1,6 @@
 import datetime
-
+import asyncio
+from django.conf import settings
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
@@ -11,6 +12,7 @@ from borrowings_app.serializers import (
     BorrowingCreateSerializer,
     BorrowingReturnSerializer,
 )
+from telegram_helper import TelegramHelper
 
 
 class BorrowingListCreateView(generics.ListCreateAPIView):
@@ -44,6 +46,27 @@ class BorrowingListCreateView(generics.ListCreateAPIView):
             queryset = queryset.filter(is_active=False)
 
         return queryset
+
+    @staticmethod
+    async def send_notification(message: str):
+        telegram_helper = TelegramHelper(
+            token=settings.TELEGRAM_BOT_TOKEN, chat_id=settings.TELEGRAM_CHAT_ID
+        )
+        await telegram_helper.send_message(message)
+
+    def perform_create(self, serializer):
+        borrowing = serializer.save()
+
+        message = (
+            f"New Borrowing Created:\n"
+            f"User: {borrowing.user}\n"
+            f"Book: {borrowing.book.title}"
+        )
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(self.send_notification(message))
+
+        loop.close()
 
 
 class BorrowingDetailView(generics.RetrieveAPIView):
