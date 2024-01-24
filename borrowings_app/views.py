@@ -14,7 +14,6 @@ from borrowings_app.serializers import (
 
 
 class BorrowingListCreateView(generics.ListCreateAPIView):
-    queryset = Borrowing.objects.all()
     permission_classes = [
         IsAuthenticated,
     ]
@@ -24,6 +23,27 @@ class BorrowingListCreateView(generics.ListCreateAPIView):
             return BorrowingCreateSerializer
 
         return BorrowingReadSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Borrowing.objects.all()
+
+        is_active = self.request.query_params.get("is_active", "").lower()
+
+        if user.is_staff:
+            user_id = self.request.query_params.get("user_id")
+
+            if user_id:
+                queryset = queryset.filter(user_id=int(user_id))
+        else:
+            queryset = queryset.filter(user_id=user.id)
+
+        if is_active == "true":
+            queryset = queryset.filter(is_active=True)
+        elif is_active == "false":
+            queryset = queryset.filter(is_active=False)
+
+        return queryset
 
 
 class BorrowingDetailView(generics.RetrieveAPIView):
@@ -49,7 +69,6 @@ def borrowing_return_view(request, pk: int):
 
     if request.method == "POST":
         if instance.is_active:
-
             updated_data = {
                 "is_active": False,
                 "actual_return_date": datetime.date.today(),
@@ -65,10 +84,7 @@ def borrowing_return_view(request, pk: int):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
-                return Response(
-                    serializer.errors,
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(
                 {"Error": "You cannot return borrowing twice"},
