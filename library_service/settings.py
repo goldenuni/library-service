@@ -14,7 +14,6 @@ from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 
-
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -144,3 +143,7 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZE",
 }
+
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+CELERY_TIMEZONE = "Europe/Kyiv"
