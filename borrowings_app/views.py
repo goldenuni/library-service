@@ -1,6 +1,8 @@
 import datetime
 import asyncio
 from django.conf import settings
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
@@ -68,6 +70,23 @@ class BorrowingListCreateView(generics.ListCreateAPIView):
 
         loop.close()
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "is_active",
+                type=OpenApiTypes.BOOL,
+                description="Filter by is_active parameter (ex. ?is_active=true)",
+            ),
+            OpenApiParameter(
+                "user_id",
+                type=OpenApiTypes.INT,
+                description="Filter by user id [ONLY FOR ADMINS] (ex. ?user_id=1)",
+            ),
+        ]
+    )
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
 
 class BorrowingDetailView(generics.RetrieveAPIView):
     queryset = Borrowing.objects.all()
@@ -80,6 +99,10 @@ class BorrowingDetailView(generics.RetrieveAPIView):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def borrowing_return_view(request, pk: int):
+    """
+    An endpoint to handle the process of returning a borrowed book.
+    Each borrowing can be returned only once.
+    """
     try:
         instance = Borrowing.objects.get(pk=pk)
     except Borrowing.DoesNotExist:
