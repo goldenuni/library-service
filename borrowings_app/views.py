@@ -52,7 +52,8 @@ class BorrowingListCreateView(generics.ListCreateAPIView):
     @staticmethod
     async def send_notification(message: str):
         telegram_helper = TelegramHelper(
-            token=settings.TELEGRAM_BOT_TOKEN, chat_id=settings.TELEGRAM_CHAT_ID
+            token=settings.TELEGRAM_BOT_TOKEN,
+            chat_id=settings.TELEGRAM_CHAT_ID,
         )
         await telegram_helper.send_message(message)
 
@@ -75,12 +76,14 @@ class BorrowingListCreateView(generics.ListCreateAPIView):
             OpenApiParameter(
                 "is_active",
                 type=OpenApiTypes.BOOL,
-                description="Filter by is_active parameter (ex. ?is_active=true)",
+                description="Filter by is_active parameter "
+                "(ex. ?is_active=true)",
             ),
             OpenApiParameter(
                 "user_id",
                 type=OpenApiTypes.INT,
-                description="Filter by user id [ONLY FOR ADMINS] (ex. ?user_id=1)",
+                description="Filter by user id [ONLY FOR ADMINS] "
+                "(ex. ?user_id=1)",
             ),
         ]
     )
@@ -130,7 +133,9 @@ def borrowing_return_view(request, pk: int):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                )
         else:
             return Response(
                 {"Error": "You cannot return borrowing twice"},

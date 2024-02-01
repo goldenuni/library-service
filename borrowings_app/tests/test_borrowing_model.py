@@ -12,7 +12,7 @@ class BorrowingModelTest(TestCase):
             email="test@test.com",
             password="testpassYo12345",
             first_name="Johny",
-            last_name="Dog"
+            last_name="Dog",
         )
 
         self.book = Book.objects.create(

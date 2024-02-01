@@ -37,11 +37,11 @@ class Borrowing(models.Model):
             if borrow_date <= expected_return_date:
                 if actual_return_date and is_active:
                     raise error_to_raise(
-                            {
-                                "Is active ERROR": "If status is_active is True, "
-                                                   "therefore actual_return_date "
-                                                   "must be None or vice verse",
-                            }
+                        {
+                            "Is active ERROR": "If status is_active is True, "
+                            "therefore actual_return_date "
+                            "must be None or vice verse",
+                        }
                     )
                 elif actual_return_date:
                     if actual_return_date < borrow_date:
@@ -55,8 +55,9 @@ class Borrowing(models.Model):
                 elif actual_return_date is None and not is_active:
                     raise error_to_raise(
                         {
-                            "Is active ERROR": "Actual return date cannot be None "
-                                               "or is_active must be True"
+                            "Is active ERROR":
+                                "Actual return date cannot be None "
+                                "or is_active must be True"
                         }
                     )
             else:

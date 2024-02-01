@@ -26,12 +26,18 @@ class Migration(migrations.Migration):
                 (
                     "cover",
                     models.CharField(
-                        choices=[("HARD", "Hardcover"), ("SOFT", "Softcover")],
+                        choices=[
+                            ("HARD", "Hardcover"),
+                            ("SOFT", "Softcover"),
+                        ],
                         max_length=4,
                     ),
                 ),
                 ("inventory", models.PositiveIntegerField()),
-                ("daily_fee", models.DecimalField(decimal_places=2, max_digits=10)),
+                (
+                    "daily_fee",
+                    models.DecimalField(decimal_places=2, max_digits=10),
+                ),
             ],
         ),
     ]
