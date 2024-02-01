@@ -1,12 +1,10 @@
 from datetime import date
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
 
 from books_app.models import Book
-from telegram_helper import TelegramHelper
 
 
 class Borrowing(models.Model):
@@ -54,6 +52,13 @@ class Borrowing(models.Model):
                                     "greater or equal to borrow_date",
                             }
                         )
+                elif actual_return_date is None and not is_active:
+                    raise error_to_raise(
+                        {
+                            "Is active ERROR": "Actual return date cannot be None "
+                                               "or is_active must be True"
+                        }
+                    )
             else:
                 raise error_to_raise(
                     {
