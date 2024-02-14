@@ -26,7 +26,7 @@ In your city, there's a library where people borrow books and pay in cash based 
 2. Clone the repository:
 
    ```bash
-   git clone https://github.com/goldenuni/library-management-system.git
+   git clone [https://github.com/goldenuni/library-management-system.git](https://github.com/goldenuni/library-service.git)
    cd library-management-system
 ### How to Run ▶️
 
